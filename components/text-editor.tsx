@@ -37,7 +37,13 @@ import {
 import { TextAlign } from "@tiptap/extension-text-align";
 import { TextAlignButton } from "@/components/tiptap-ui/text-align-button";
 
-const Tiptap = () => {
+const Tiptap = ({
+  content,
+  onChange,
+}: {
+  content?: string;
+  onChange?: (content: string) => void;
+}) => {
   const editor = useEditor({
     extensions: [
       ListKit,
@@ -119,25 +125,22 @@ const Tiptap = () => {
       }),
     ],
 
-    content: `
-        <p>Try selecting a paragraph and clicking one of the text alignment buttons.</p>
-        <p style="text-align: left">Left-aligned text.</p>
-        <p style="text-align: center">Center-aligned text.</p>
-        <p style="text-align: right">Right-aligned text.</p>
-        <p style="text-align: justify">Justified text.</p>
-        `,
-    immediatelyRender: false,
     editorProps: {
       attributes: {
-        class: "prose ",
+        class: "prose min-h-24 border-2 px-2",
       },
     },
+    content,
+    onUpdate: ({ editor }) => {
+      onChange?.(editor.getHTML());
+    },
+    immediatelyRender: false,
   });
 
   return (
     <>
       {editor && <ToolBar editor={editor} />}
-      <div>
+      <div className="">
         <EditorContent editor={editor} />
       </div>
     </>
@@ -237,7 +240,7 @@ const ToolBar = ({ editor }: { editor: Editor }) => {
                       : "paragraph"
         }
       >
-        <SelectTrigger className="w-[70px]">
+        <SelectTrigger className="w-17.5">
           <SelectValue placeholder="14" />
         </SelectTrigger>
         <SelectContent>

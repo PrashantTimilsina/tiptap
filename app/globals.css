@@ -1,5 +1,5 @@
-@import '../styles/_variables.scss';
-@import '../styles/_keyframe-animations.scss';
+@import "../styles/_variables.scss";
+@import "../styles/_keyframe-animations.scss";
 
 @import "tailwindcss";
 @import "tw-animate-css";
@@ -130,16 +130,13 @@
     @apply bg-background text-foreground;
   }
 }
-/* .prose :where(ul):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
-  list-style-type: disc;
-  margin-top: 1.25em;
-  margin-bottom: 1.25em;
-  padding-inline-start: 1.625em;
-  padding-left: 1.5em;
-  margin: 1em 0;
+.tiptap-editor strong,
+.tiptap-editor b,
+.tiptap-editor em,
+.tiptap-editor i,
+.tiptap-editor u,
+.tiptap-editor s,
+.tiptap-editor del,
+.tiptap-editor code {
+  color: inherit;
 }
-.prose :where(a):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
-  color: #68cef8;
-  text-decoration: underline;
-  font-weight: 500;
-} */

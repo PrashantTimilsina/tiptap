@@ -11,10 +11,13 @@ import Highlight from "@tiptap/extension-highlight";
 import Underline from "@tiptap/extension-underline";
 import { ListKit } from "@tiptap/extension-list";
 import StarterKit from "@tiptap/starter-kit";
+import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import { Toggle } from "./ui/toggle";
+// import { Color, TextStyle } from "@tiptap/extension-text-style";
 import {
   BoldIcon,
+  BookImage,
   CodeIcon,
   HighlighterIcon,
   Italic,
@@ -47,6 +50,7 @@ const Tiptap = ({
   const editor = useEditor({
     extensions: [
       ListKit,
+      Image,
       StarterKit,
       Highlight.configure({ multicolor: true }),
       Underline,
@@ -130,7 +134,13 @@ const Tiptap = ({
         class: "prose min-h-24 border-2 px-2",
       },
     },
+
     content,
+    // content: `
+    //     <p>This is a basic example of implementing images. Drag to re-order.</p>
+    //     <img src="https://placehold.co/600x400" />
+    //     <img src="https://placehold.co/800x400" />
+    //   `,
     onUpdate: ({ editor }) => {
       onChange?.(editor.getHTML());
     },
@@ -202,6 +212,18 @@ const ToolBar = ({ editor }: { editor: Editor }) => {
       alert(e.message);
     }
   }, [editor]);
+  const addImage = useCallback(() => {
+    const url = window.prompt("URL");
+
+    if (url) {
+      editor.chain().focus().setImage({ src: url }).run();
+    }
+  }, [editor]);
+
+  if (!editor) {
+    return null;
+  }
+
   const handleHeadingChange = (value: string) => {
     if (value === "paragraph") {
       editor.chain().focus().setParagraph().run();
@@ -342,6 +364,21 @@ const ToolBar = ({ editor }: { editor: Editor }) => {
       >
         <Quote className="h-4 w-4" />
       </Toggle>
+      <Toggle
+        // aria-label="Toggle image"
+        size="sm"
+        // pressed={editorState.isBlockquote}
+        onPressedChange={addImage}
+      >
+        <BookImage className="h-4 w-4" />
+      </Toggle>
+      {/* <div className="control-group">
+        <div className="button-group">
+          <button onClick={addImage}>
+            <BookImage />
+          </button>
+        </div>
+      </div> */}
 
       {editorState.isLink ? (
         <Toggle

@@ -140,3 +140,7 @@
 .tiptap-editor code {
   color: inherit;
 }
+
+.tiptap-editor {
+  width: 100%;
+}

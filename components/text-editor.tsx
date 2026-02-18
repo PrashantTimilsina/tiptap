@@ -4,7 +4,6 @@ import {
   EditorContent,
   Editor,
   useEditorState,
-  EditorContext,
 } from "@tiptap/react";
 
 import Highlight from "@tiptap/extension-highlight";
@@ -15,20 +14,7 @@ import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import { Toggle } from "./ui/toggle";
 import { Color, TextStyle } from "@tiptap/extension-text-style";
-import {
-  BoldIcon,
-  BookImage,
-  CodeIcon,
-  HighlighterIcon,
-  Italic,
-  LinkIcon,
-  ListIcon,
-  ListOrderedIcon,
-  Quote,
-  StrikethroughIcon,
-  UnderlineIcon,
-  UnlinkIcon,
-} from "lucide-react";
+import { BoldIcon, Italic, UnderlineIcon, UnlinkIcon } from "lucide-react";
 import { useCallback, useState, useRef, useEffect } from "react";
 import {
   Select,
@@ -39,7 +25,18 @@ import {
 } from "./ui/select";
 import { TextAlign } from "@tiptap/extension-text-align";
 import { TextAlignButton } from "@/components/tiptap-ui/text-align-button";
-
+import {
+  AlignCenter,
+  AlignLeft,
+  AlignRight,
+  GAlleryIcon,
+  ListIcon,
+  OrderedListIcon,
+  LinkIcon,
+  StrikeThrough,
+  ItalicIcon,
+} from "@/app/icons/Icons";
+const Divider = () => <div className="w-px self-stretch bg-border" />;
 const Tiptap = ({
   content,
   onChange,
@@ -125,13 +122,12 @@ const Tiptap = ({
 
     editorProps: {
       attributes: {
-        // FIX 2: Added "tiptap-editor" so the CSS fix below can target this
-        // editor without affecting other prose elements on the page
-        class: "tiptap-editor prose min-h-24 border-2 px-2",
+        class:
+          "tiptap-editor prose min-h-24  px-2 rounded focus:outline-none py-2 px-4 max-w-full",
       },
     },
 
-    content,
+    content: content || "Describe your product, features, materials, and usage",
     onUpdate: ({ editor }) => {
       onChange?.(editor.getHTML());
     },
@@ -139,40 +135,21 @@ const Tiptap = ({
   });
 
   return (
-    <>
-      {/*
-        FIX 3: Tailwind's `prose` plugin hardcodes color values on strong, em,
-        code etc. (e.g. `strong { color: var(--tw-prose-bold) }`), which
-        overrides the inline `color` style Tiptap puts on the wrapping <span>.
-        `color: inherit` forces those elements to pass the color through from
-        the <span> instead of resetting it.
+    <div className="border rounded-md max-w-212.5 mt-10 overflow-hidden border-[#D7D7D7]">
+      {editor && (
+        <div>
+          <ToolBar editor={editor} />
+        </div>
+      )}
 
-        Tip: you can move these rules into globals.css and remove this <style>
-        block — same effect, cleaner separation.
-      */}
-      {/* <style>{`
-        .tiptap-editor strong,
-        .tiptap-editor b,
-        .tiptap-editor em,
-        .tiptap-editor i,
-        .tiptap-editor u,
-        .tiptap-editor s,
-        .tiptap-editor del,
-        .tiptap-editor code {
-          color: inherit;
-        }
-      `}</style> */}
-      {editor && <ToolBar editor={editor} />}
-      <div className="">
-        <EditorContent editor={editor} />
-      </div>
-    </>
+      <EditorContent className="w-full max-w-full" editor={editor} />
+    </div>
   );
 };
 
 export default Tiptap;
 
-// ─── Color definitions (shared between ColorPicker and ToolBar) ───────────────
+//(shared between ColorPicker and ToolBar)
 
 const colors = [
   { value: "default", color: "", label: "Default" },
@@ -185,7 +162,7 @@ const colors = [
   { value: "green", color: "#B9F18D", label: "Green" },
 ];
 
-// ─── Color Picker Popover ─────────────────────────────────────────────────────
+//Color Picker Popover
 
 const ColorPicker = ({
   currentColor,
@@ -208,16 +185,16 @@ const ColorPicker = ({
   }, [open]);
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         title="Text color"
-        className="flex items-center justify-center w-9 h-9 rounded-md border border-input bg-background hover:bg-accent transition-colors"
+        className="flex items-center justify-center w-4 h-4 rounded-md border border-input bg-background hover:bg-accent transition-colors"
       >
         <span
-          className="w-4 h-4 rounded-full border border-black/10"
-          style={{ backgroundColor: currentColor || "#000000" }}
+          className="w-full h-full rounded-full border border-[#334155]"
+          style={{ backgroundColor: currentColor || "#334155" }}
         />
       </button>
 
@@ -287,7 +264,7 @@ const ColorPicker = ({
   );
 };
 
-// ─── ToolBar ──────────────────────────────────────────────────────────────────
+//ToolBar
 
 const ToolBar = ({ editor }: { editor: Editor }) => {
   const editorState = useEditorState({
@@ -384,7 +361,7 @@ const ToolBar = ({ editor }: { editor: Editor }) => {
   return (
     <div
       className={
-        "bg-background sticky top-0 z-10 flex flex-wrap items-center gap-1 border-b p-2 w-full"
+        "bg-background  sticky top-0 z-10 flex flex-wrap items-center gap-2 border-b  w-full h-10  "
       }
     >
       <Select
@@ -405,10 +382,10 @@ const ToolBar = ({ editor }: { editor: Editor }) => {
                       : "paragraph"
         }
       >
-        <SelectTrigger className="w-17.5">
-          <SelectValue placeholder="14" />
+        <SelectTrigger className="w-17.5 h-4 text-sm outline-none border-none gap-2 flex items-center justify-center">
+          <SelectValue className=" text-xs! " placeholder="14" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="text-sm!  border-none outline-none">
           <SelectItem value="paragraph">14</SelectItem>
           <SelectItem value="heading6">16</SelectItem>
           <SelectItem value="heading5">18</SelectItem>
@@ -418,29 +395,34 @@ const ToolBar = ({ editor }: { editor: Editor }) => {
           <SelectItem value="heading1">26</SelectItem>
         </SelectContent>
       </Select>
+      <Divider />
 
       <ColorPicker
         currentColor={editorState.color}
         onColorChange={handleColorChange}
       />
+      <Divider />
 
       <Toggle
         aria-label="Toggle bold"
         size="sm"
+        className="text-[#667085] !h-5 !w-5 rounded"
         pressed={editorState.isBold}
         onPressedChange={() => editor.chain().focus().toggleBold().run()}
       >
-        <BoldIcon className="h-4 w-4" />
+        <BoldIcon className="!h-4 !w-4" />
       </Toggle>
       <Toggle
+        className="text-[#667085] !h-5 !w-5 rounded"
         aria-label="Toggle italic"
         size="sm"
         pressed={editorState.isItalic}
         onPressedChange={() => editor.chain().focus().toggleItalic().run()}
       >
-        <Italic className="h-4 w-4" />
+        <ItalicIcon className="!h-4 !w-4 p-[2px]" />
       </Toggle>
       <Toggle
+        className="text-[#667085] h-5 w-5 rounded"
         aria-label="Toggle underline"
         size="sm"
         pressed={editorState.isUnderline}
@@ -449,39 +431,69 @@ const ToolBar = ({ editor }: { editor: Editor }) => {
         <UnderlineIcon className="h-4 w-4" />
       </Toggle>
       <Toggle
+        className="text-[#667085] !h-5 !w-5 rounded"
         aria-label="Toggle strikethrough"
         size="sm"
         pressed={editorState.isStrike}
         onPressedChange={() => editor.chain().focus().toggleStrike().run()}
       >
-        <StrikethroughIcon className="h-4 w-4" />
+        <StrikeThrough className="!h-4 !w-4 text-[#667085]" />
       </Toggle>
-      <EditorContext.Provider value={{ editor }}>
+      <Divider />
+      {/* <EditorContext.Provider value={{ editor }}>
         <TextAlignButton
           editor={editor}
           align="left"
+          className="text-[#667085]!"
           onAligned={() => console.log("Text aligned!")}
         />
-        <TextAlignButton align="center" />
-        <TextAlignButton align="right" />
-      </EditorContext.Provider>
+        <TextAlignButton align="center" className="text-[#667085]!" />
+        <TextAlignButton align="right" className="text-[#667085]!" />
+      </EditorContext.Provider> */}
       <Toggle
-        aria-label="Toggle highlight"
+        className="text-[#667085] h-5 w-5 rounded"
         size="sm"
-        pressed={editorState.isHighlight}
-        onPressedChange={() => editor.chain().focus().toggleHighlight().run()}
+        pressed={editor.isActive({ textAlign: "left" })}
+        onPressedChange={() =>
+          editor.chain().focus().setTextAlign("left").run()
+        }
       >
-        <HighlighterIcon className="h-4 w-4" />
+        <AlignLeft className="h-4 w-4" />
       </Toggle>
       <Toggle
-        aria-label="Toggle code"
+        className="text-[#667085] h-5 w-5 rounded"
         size="sm"
-        pressed={editorState.isCode}
-        onPressedChange={() => editor.chain().focus().toggleCode().run()}
+        pressed={editor.isActive({ textAlign: "center" })}
+        onPressedChange={() =>
+          editor.chain().focus().setTextAlign("center").run()
+        }
       >
-        <CodeIcon className="h-4 w-4" />
+        <AlignCenter className="h-4 w-4" />
       </Toggle>
       <Toggle
+        className="text-[#667085] h-5 w-5 rounded"
+        size="sm"
+        pressed={editor.isActive({ textAlign: "right" })}
+        onPressedChange={() =>
+          editor.chain().focus().setTextAlign("right").run()
+        }
+      >
+        <AlignRight className="h-4 w-4" />
+      </Toggle>
+
+      <Divider />
+
+      <Toggle
+        className="text-[#667085] h-5 w-5 rounded"
+        aria-label="Toggle ordered list"
+        size="sm"
+        pressed={editorState.isOrderedList}
+        onPressedChange={() => editor.chain().focus().toggleOrderedList().run()}
+      >
+        <OrderedListIcon className="h-4 w-4" />
+      </Toggle>
+      <Toggle
+        className="text-[#667085] h-5 w-5 rounded"
         aria-label="Toggle bullet list"
         size="sm"
         pressed={editorState.isBulletList}
@@ -489,28 +501,19 @@ const ToolBar = ({ editor }: { editor: Editor }) => {
       >
         <ListIcon className="h-4 w-4" />
       </Toggle>
+      <Divider />
+
       <Toggle
-        aria-label="Toggle ordered list"
         size="sm"
-        pressed={editorState.isOrderedList}
-        onPressedChange={() => editor.chain().focus().toggleOrderedList().run()}
+        onPressedChange={addImage}
+        className="text-[#667085] h-5 w-5 rounded"
       >
-        <ListOrderedIcon className="h-4 w-4" />
-      </Toggle>
-      <Toggle
-        aria-label="Toggle blockquote"
-        size="sm"
-        pressed={editorState.isBlockquote}
-        onPressedChange={() => editor.chain().focus().toggleBlockquote().run()}
-      >
-        <Quote className="h-4 w-4" />
-      </Toggle>
-      <Toggle size="sm" onPressedChange={addImage}>
-        <BookImage className="h-4 w-4" />
+        <GAlleryIcon className="h-4 w-4" />
       </Toggle>
 
       {editorState.isLink ? (
         <Toggle
+          className="text-[#667085] h-5 w-5 rounded"
           aria-label="Unset link"
           size="sm"
           pressed={editorState.isLink}
@@ -522,6 +525,7 @@ const ToolBar = ({ editor }: { editor: Editor }) => {
         </Toggle>
       ) : (
         <Toggle
+          className="text-[#667085] h-5 w-5 rounded"
           aria-label="Set link"
           size="sm"
           pressed={false}
